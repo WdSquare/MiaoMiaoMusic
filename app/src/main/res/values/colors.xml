@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#FEB408</color>//状态栏
     <color name="colorAccent">#000000</color>//强调色
     <color name="colorText">#000000</color>//字体颜色
-    <color name="colorBar">#FFFFFF</color>//底栏颜色
+    <color name="colorBar">#F4F4F4</color>//底栏颜色
     <color name="colorBg">#FFFFFF</color>//背景颜色
     <color name="colorStrokeItem">#E8E8E8</color>//描边颜色
     <color name="colorStrokeBar">#E8E8E8</color>//描边颜色
