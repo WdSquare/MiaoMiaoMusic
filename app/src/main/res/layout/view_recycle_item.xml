@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_item_recycle"
+    android:orientation="horizontal"
+    android:padding="2dp">
+
+    <ImageView
+        android:id="@+id/recycle_item_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:background="@color/colorAccent"
+        android:scaleType="center" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/colorBg"
+        android:layout_marginLeft="30dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/recycle_item_title"
+            android:layout_width="200dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorBg"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorText"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="400dp"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:id="@+id/recycle_item_author"
+            android:layout_width="200dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/colorBg"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorText"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>
