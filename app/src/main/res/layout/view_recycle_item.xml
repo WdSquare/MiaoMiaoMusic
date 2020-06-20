@@ -1,51 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_item_recycle"
-    android:orientation="horizontal"
-    android:padding="2dp">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/recycle_item_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="20dp"
-        android:background="@color/colorAccent"
-        android:scaleType="center" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/f_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="100dp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/colorBg"
-        android:layout_marginLeft="30dp"
-        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:paddingTop="5dp">
 
-        <TextView
-            android:id="@+id/recycle_item_title"
-            android:layout_width="200dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/colorBg"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorText"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/item_title"
+                android:layout_width="250dp"
+                android:layout_height="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="19dp"
+                android:layout_marginBottom="30dp"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:text="我是标题"
+                android:textSize="15dp"
+                android:textColor="@color/colorText"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="400dp"
-            android:layout_height="0dp" />
+            <TextView
+                android:id="@+id/item_author"
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="21dp"
+                android:layout_marginBottom="9dp"
+                android:text="演唱者"
+                android:textSize="10dp"
+                android:textColor="@color/colorText"
+                app:layout_constraintTop_toBottomOf="@+id/item_title" />
 
-        <TextView
-            android:id="@+id/recycle_item_author"
-            android:layout_width="200dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="2dp"
-            android:background="@color/colorBg"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorText"
-            android:textSize="16sp" />
-    </LinearLayout>
-</LinearLayout>
+            <TextView
+                android:id="@+id/item_album"
+                android:layout_width="100dp"
+                android:layout_height="15dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="9dp"
+                android:layout_toEndOf="@+id/item_author"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:textColor="@color/colorText"
+                android:text="专辑"
+                android:textSize="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/item_title" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/f_view"
+        android:layout_marginTop="0dp"
+        android:background="@color/colorStrokeItem" />
+</RelativeLayout>

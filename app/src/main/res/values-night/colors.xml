@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimary">#222020</color>
+    <color name="colorPrimaryDark">#222020</color>
     <color name="colorAccent">#FEB408</color>
-    <color name="colorText">#FEB408</color>
-    <color name="colorBar">#000000</color>
-    <color name="colorBg">#131313</color>
-    <color name="colorStrokeItem">#202020</color>//描边颜色
+    <color name="colorText">#CDCDCD</color>
+    <color name="colorNavText">#BFCDCDCD</color>//导航栏字体颜色
+    <color name="colorBar">#494949</color>
+    <color name="colorBg">#000000</color>
+    <color name="colorIconBg">#2E2E2E</color>
+    <color name="colorStrokeItem">#2C2C2C</color>//描边颜色
     <color name="colorStrokeBar">#000000</color>//描边颜色
 </resources>
