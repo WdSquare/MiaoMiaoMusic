@@ -2,10 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xicheng.app">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>//写入存储
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>//读取
-    <uses-permission android:name="android.permission.WAKE_LOCK" />//唤醒锁定唤醒权限
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,6 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlayerActivity" />
+
         <service android:name=".PlayerService">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />

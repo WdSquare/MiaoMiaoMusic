@@ -1,8 +1,15 @@
 package com.xicheng.app;
 
 
+import android.Manifest;
 import android.content.ComponentName;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
@@ -13,12 +20,19 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xicheng.app.model.MyDatabaseHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,21 +40,32 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private MediaBrowserCompat mMediaBrowser;
     private MediaControllerCompat mMediaController;
+    private List<MediaBrowserCompat.MediaItem> allMusic;
+    private RecycleViewAdapter mRecycleViewAdapter;
+    private TextView mTitleBar;
+    private TextView mArtistBar;
+    private ImageView mImageBar;
+    private RecyclerView recyclerView;
+    private Uri mUri;
+    private int mPosition;
+    private ImageButton playButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initRequestPermissions();
+        allMusic = new ArrayList<>();
         initMediaBrowserCompat();
-        initRecycleView();
+        mMediaBrowser.connect();
+        initView();
         MyDatabaseHelper MyDatabaseHelper = new MyDatabaseHelper(this);
-        MyDatabaseHelper.insert("a","aaa","aa","aa","aa",1);
+        MyDatabaseHelper.insert("a", "aaa", "aa", "aa", "aa", 1);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mMediaBrowser.connect();
     }
 
     @Override
@@ -67,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
      * 加载底栏信息
      */
     private void buildTransportControls() {
-        ImageButton playButton = findViewById(R.id.main_bar_play);
+        playButton = findViewById(R.id.main_bar_play);
         Log.d(TAG, "buildTransportControls: ");
         //播放按钮被点击
         playButton.setOnClickListener(new View.OnClickListener() {
@@ -75,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int pbState = MediaControllerCompat.getMediaController(MainActivity.this).getPlaybackState().getState();
                 Log.d(TAG, "onClick: ");
-                if(pbState == PlaybackStateCompat.STATE_NONE){
-                    MediaControllerCompat.getMediaController(MainActivity.this).getTransportControls().play();
-                }
                 if (pbState == PlaybackStateCompat.STATE_PAUSED) {
                     MediaControllerCompat.getMediaController(MainActivity.this).getTransportControls().play();
                 } else {
@@ -90,112 +112,138 @@ public class MainActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaControllerCompat.getMediaController(MainActivity.this).getTransportControls().skipToNext();
+                mPosition = mPosition == allMusic.size()-1 ? 0 : ++ mPosition;
+                MediaControllerCompat.getMediaController(MainActivity.this).
+                        getTransportControls().playFromUri(allMusic.get(mPosition).getDescription().getMediaUri(),new Bundle());
             }
         });
 
         MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(MainActivity.this);
-
-        // 界面显示
-        MediaMetadataCompat metadata = mediaController.getMetadata();
-        PlaybackStateCompat pbState = mediaController.getPlaybackState();
-//        String title = metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
-//        String artist = metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
-//        TextView titleBar = findViewById(R.id.title_bar_main);
-//        TextView artistBar = findViewById(R.id.author_bar_main);
-//        titleBar.setText(title);
-//        artistBar.setText(artist);
         // 注册控制回调
         mediaController.registerCallback(mControllerCallback);
+
     }
-  /*  private void initBarTop() {
-        mTitleDataList = new ArrayList<>();
-        mTitleDataList.add("我的");
-        mTitleDataList.add("我的");
-        mTitleDataList.add("我的");
-        MagicIndicator magicIndicator = (MagicIndicator) findViewById(R.id.magic_indicator);
-        mViewPager = findViewById(R.id.view_pager);
-        CommonNavigator commonNavigator = new CommonNavigator(this);
-        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
-
-            @Override
-            public int getCount() {
-                return mTitleDataList == null ? 0 : mTitleDataList.size();
-            }
-
-            @Override
-            public IPagerTitleView getTitleView(Context context, final int index) {
-                ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
-                colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
-                colorTransitionPagerTitleView.setSelectedColor(Color.BLACK);
-                colorTransitionPagerTitleView.setText(mTitleDataList.get(index));
-                colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        mViewPager.setCurrentItem(index);
-                    }
-                });
-                return colorTransitionPagerTitleView;
-            }
-
-            @Override
-            public IPagerIndicator getIndicator(Context context) {
-                LinePagerIndicator indicator = new LinePagerIndicator(context);
-                indicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);
-                return indicator;
-            }
-        });
-        magicIndicator.setNavigator(commonNavigator);
-        mFragmentContainerHelper = new FragmentContainerHelper(magicIndicator);
-
-// ...
-
-        // mFragmentContainerHelper.handlePageSelected(1);
-    }
-*/
 
     /**
-     * 初始化RecycleView
+     * 初始化View
      */
-    void initRecycleView() {
-        RecyclerView recyclerView = findViewById(R.id.main_recycle);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecycleViewAdapter adapter = new RecycleViewAdapter(this);
-        recyclerView.setAdapter(adapter);
+    void initView() {
+        //底栏
+        mTitleBar = findViewById(R.id.title_bar_main);
+        mArtistBar = findViewById(R.id.author_bar_main);
+        mImageBar = findViewById(R.id.main_bar_image);
+        //列表
+        recyclerView = findViewById(R.id.main_recycle);
     }
 
+    private void resetRecyclerVIew(final List<MediaBrowserCompat.MediaItem> mediaItems) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecycleViewAdapter = new RecycleViewAdapter(this, mediaItems);
+        Log.d(TAG, "initRecycleView: " + mediaItems.size());
+        recyclerView.setAdapter(mRecycleViewAdapter);
+        mRecycleViewAdapter.setOnItemClickListener(new RecycleViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                //Log.d(TAG, "onItemClick: " + allMusic.get(position).getDescription().getMediaUri());
+                mPosition = position;
+                mUri =mediaItems.get(position).getDescription().getMediaUri();
+                MediaControllerCompat.getMediaController(MainActivity.this).getTransportControls()
+                        .playFromUri(mUri, new Bundle());
+            }
+        });
+    }
 
+    //连接回调，和服务器连接成功后回调
     private final MediaBrowserCompat.ConnectionCallback mConnectionCallback =
             new MediaBrowserCompat.ConnectionCallback() {
                 @Override
                 public void onConnected() {
                     super.onConnected();
-                    // 拿到会话令牌
-                    MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
-                    try {
-                        Log.d(TAG, "onConnected: ");
-                        // 创建控制器
-                        mMediaController = new MediaControllerCompat(MainActivity.this, // Context
-                                token);
-                        // 绑定控制器
-                        MediaControllerCompat.setMediaController(MainActivity.this, mMediaController);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                    if (mMediaBrowser.isConnected()) {
+                        // 拿到会话令牌
+                        MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
+                        try {
+                            Log.d(TAG, "onConnected: ");
+                            // 创建控制器
+                            mMediaController = new MediaControllerCompat(MainActivity.this, // Context
+                                    token);
+                            // 绑定控制器
+                            MediaControllerCompat.setMediaController(MainActivity.this, mMediaController);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        //取消订阅
+                        mMediaBrowser.unsubscribe(Constants.LIST_ALL);
+                        //订阅
+                        mMediaBrowser.subscribe(Constants.LIST_ALL, subscriptionCallback);
                     }
                     // 更新ui
                     buildTransportControls();
                 }
             };
-    MediaControllerCompat.Callback mControllerCallback =
+    //订阅回调，拿到音乐列表
+    final MediaBrowserCompat.SubscriptionCallback subscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
+            if (children != null) {
+                Log.d(TAG, "onChildrenLoaded: 列表大小" + children.size());
+                for (MediaBrowserCompat.MediaItem mediaItem : children) {
+                    allMusic.add(mediaItem);
+                }
+            }
+            resetRecyclerVIew(allMusic);
+        }
+    };
+    //控制器回调，播放状态及元数据改变时回调
+    final MediaControllerCompat.Callback mControllerCallback =
             new MediaControllerCompat.Callback() {
                 @Override
                 public void onMetadataChanged(MediaMetadataCompat metadata) {
+                    if (metadata != null) {
+                        setBar(metadata);
+                    }
                 }
 
                 @Override
                 public void onPlaybackStateChanged(PlaybackStateCompat state) {
                     Log.d(TAG, "onPlaybackStateChanged: ");
+                    if(state.getState() == PlaybackStateCompat.STATE_PLAYING){
+                        playButton.setImageDrawable(getResources().getDrawable(R.drawable.pause_icon));
+                    }else {
+                        playButton.setImageDrawable(getResources().getDrawable(R.drawable.play_icon));
+                    }
                 }
             };
+
+    private void setBar(MediaMetadataCompat metadata) {
+        mTitleBar.setText(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
+        mArtistBar.setText(metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
+        String uri = metadata.getString(MediaMetadataCompat.METADATA_KEY_DATE);
+        loadingCover(uri);
+    }
+
+    private void loadingCover(String mediaUri) {
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        mediaMetadataRetriever.setDataSource(mediaUri);
+        byte[] picture = mediaMetadataRetriever.getEmbeddedPicture();
+        if (picture != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(picture, 0, picture.length);
+            mImageBar.setImageDrawable(null);
+            mImageBar.setImageBitmap(bitmap);
+        } else {
+            mImageBar.setImageDrawable(getDrawable(R.drawable.next));
+        }
+    }
+    /**
+     * 请求权限
+     */
+    private void initRequestPermissions() {
+        int permission = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // 请求权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+
+    }
 }

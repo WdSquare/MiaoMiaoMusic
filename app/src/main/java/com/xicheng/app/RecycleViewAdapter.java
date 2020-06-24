@@ -1,6 +1,11 @@
 package com.xicheng.app;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.browse.MediaBrowser;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +13,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Square
@@ -18,11 +26,14 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.InnerHolder> {
 
     private OnItemClickListener mOnItemClickListener;
-    Context mContext;
+    private String TAG = "RecycleViewAdapter";
+    private Context mContext;
+    private List<MediaBrowserCompat.MediaItem> mMusicList;
 
     //构造方法
-    public RecycleViewAdapter(Context context) {
+    public RecycleViewAdapter(Context context, List<MediaBrowserCompat.MediaItem> musicList) {
         this.mContext = context;
+        this.mMusicList = musicList;
     }
 
     /*
@@ -44,8 +55,8 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public int getItemCount() {
-
-        return 20;
+        //Log.d(TAG, "getItemCount: " + mMusicList.size());
+        return mMusicList.size();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -62,7 +73,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
         private TextView mTitle;
         private TextView mAuthor;
-        private TextView mAlbum;
         private View itemView;
 
 
@@ -72,15 +82,17 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             itemView.setSelected(true);
             mTitle = itemView.findViewById(R.id.item_title);
             mAuthor = itemView.findViewById(R.id.item_author);
-            mAlbum = itemView.findViewById(R.id.item_album);
+
         }
 
         //设置数据
+        @SuppressLint("SetTextI18n")
         public void setData(final int position) {
-//            ItemBean itemBean = mData.get(position);
-//            mTitle.setText(itemBean.titles);
-//            mAuthor.setText(itemBean.author);
-//            mAlbum.setText(itemBean.album);
+            MediaBrowserCompat.MediaItem mediaItem = mMusicList.get(position);
+            mTitle.setText(mediaItem.getDescription().getTitle());
+            mAuthor.setText(mediaItem.getDescription().getSubtitle() +
+                    " - " + Objects.requireNonNull(mediaItem.getDescription().getExtras()).getString(MediaMetadataCompat.METADATA_KEY_ALBUM));
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

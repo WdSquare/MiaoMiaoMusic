@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">App</string>
+    <string name="app_name">喵喵音乐</string>
     <string name="label_previous">上一首</string>
     <string name="label_pause">暂停</string>
     <string name="label_play">播放</string>
     <string name="label_next">下一首</string>
     <string name="notification_channel">喵喵音乐</string>
     <string name="notification_channel_description">播放音乐</string>
+    <string name="pause">暂停</string>
 </resources>

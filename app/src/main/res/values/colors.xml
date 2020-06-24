@@ -3,7 +3,7 @@
     <color name="colorPrimary">#FEB408</color>//主色
     <color name="colorPrimaryDark">#FEB408</color>//状态栏
     <color name="colorAccent">#000000</color>//强调色
-    <color name="colorText">#B3000000</color>//字体颜色
+    <color name="colorText">#000000</color>//字体颜色
     <color name="colorNavText">#CC000000</color>//导航栏字体颜色
     <color name="colorBar">#FFFFFF</color>//底栏颜色
     <color name="colorBg">#ECECEC</color>//背景颜色
