@@ -53,7 +53,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="15dp"
             android:layout_marginBottom="12dp"
-            android:background="@color/colorPrimary" />
+            android:background="@mipmap/ic_launcher"/>
 
         <TextView
             android:id="@+id/title_bar_main"
@@ -64,8 +64,8 @@
             android:layout_marginBottom="5dp"
             android:layout_toEndOf="@+id/main_bar_image"
             android:background="@color/colorBar"
-            android:text="喵喵音乐"
             android:textColor="@color/colorText"
+            android:text="喵~"
             android:textSize="18sp" />
 
         <TextView
@@ -78,7 +78,7 @@
             android:layout_toEndOf="@+id/main_bar_image"
             android:background="@color/colorBar"
             android:textColor="@color/colorText"
-            android:text="希程"
+            android:text="享受音乐"
             android:textSize="13sp" />
 
         <LinearLayout
@@ -95,8 +95,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@color/colorBar"
-                android:src="@drawable/play_icon"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/play_icon" />
 
             <ImageButton
                 android:id="@+id/main_bar_next"

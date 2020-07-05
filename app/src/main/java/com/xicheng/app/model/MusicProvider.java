@@ -1,8 +1,6 @@
 package com.xicheng.app.model;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
+import android.app.Application;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,14 +8,14 @@ import android.provider.MediaStore;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
-
-import androidx.core.app.ActivityCompat;
+import android.util.ArraySet;
 
 import com.xicheng.app.Constants;
-import com.xicheng.app.PlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by Square
@@ -26,21 +24,20 @@ import java.util.List;
  * Version :
  */
 public class MusicProvider {
-    Context mContext;
-    private List<MediaBrowserCompat.MediaItem> mAllMusics = new ArrayList<>();//全部音乐
-    private List<MediaMetadataCompat> mMetadata = new ArrayList<>();//全部音乐
+    private Application mContext;
+    private List<MediaBrowserCompat.MediaItem> mAllMusicList = new ArrayList<>();//全部音乐
+    private List<MediaMetadataCompat> mMetadataList = new ArrayList<>();//全部音乐
 
-
-    public MusicProvider(Context context) {
+    public MusicProvider(Application context) {
         this.mContext = context;
         //扫描媒体库
         scanAllAudioFiles();
     }
 
-    public List<MediaBrowserCompat.MediaItem> getListFromMediaId(String mediaId) {
+    public List<MediaBrowserCompat.MediaItem> getListFromListId(String mediaId) {
         switch (mediaId){
             case Constants.LIST_ALL:
-                return getAllMusics();
+                return getAllMusicList();
             case Constants.LIST_FAVOURITE:
                 return getFavourite();
         }
@@ -51,8 +48,25 @@ public class MusicProvider {
         return null;
     }
 
-    private List<MediaBrowserCompat.MediaItem> getAllMusics() {
-        return mAllMusics;
+    private List<MediaBrowserCompat.MediaItem> getAllMusicList() {
+        return mAllMusicList;
+    }
+
+    List<MediaBrowserCompat.MediaItem> getListFromArtist(String artist){
+        List<MediaBrowserCompat.MediaItem> list = new ArrayList<>();
+        for (MediaBrowserCompat.MediaItem mediaItem : mAllMusicList) {
+            if(Objects.equals(mediaItem.getDescription().getSubtitle(), artist)){
+                list.add(mediaItem);
+            }
+        }
+        return list;
+    }
+    public Set<String> getAllArtist(){
+        Set<String> stringSet = new ArraySet<>();
+        for (MediaBrowserCompat.MediaItem mediaItem : mAllMusicList) {
+            stringSet.add(String.valueOf(mediaItem.getDescription().getSubtitle()));
+        }
+        return stringSet;
     }
 
     /**
@@ -61,12 +75,24 @@ public class MusicProvider {
      * @return 找到的元数据
      */
     public MediaMetadataCompat getMetadataFromUri(Uri uri) {
-        for (MediaMetadataCompat metadata : mMetadata) {
+        for (MediaMetadataCompat metadata : mMetadataList) {
             if (Uri.parse(metadata.getString(MediaMetadataCompat.METADATA_KEY_DATE)).equals(uri)) {
                 return metadata;
             }
         }
         return null;
+    }
+
+    public MediaMetadataCompat getMetadataFromId(int id) {
+        if(mMetadataList == null){
+            scanAllAudioFiles();
+        }
+        if(id < mMetadataList.size()){
+            return mMetadataList.get(id );
+        }else {
+            return null;
+        }
+
     }
 
     /**
@@ -76,6 +102,7 @@ public class MusicProvider {
 
         Cursor cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        assert cursor != null;
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 String mediaId = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
@@ -93,7 +120,7 @@ public class MusicProvider {
                         .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
                         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
                         .build();
-                mMetadata.add(metadata);
+                mMetadataList.add(metadata);
                 Bundle bundle = new Bundle();
                 bundle.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album);
                 bundle.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration);
@@ -107,14 +134,13 @@ public class MusicProvider {
                         .build();
                 MediaBrowserCompat.MediaItem mediaItem = new MediaBrowserCompat.MediaItem(descriptionCompat,
                         MediaBrowserCompat.MediaItem.FLAG_BROWSABLE);
-                mAllMusics.add(mediaItem);
+                mAllMusicList.add(mediaItem);
                 cursor.moveToNext();
             }
         }
+        cursor.close();
     }
 
-    public void updateDatabase() {
 
-    }
 
 }

@@ -10,4 +10,5 @@
     <color name="colorIconBg">#2E2E2E</color>
     <color name="colorStrokeItem">#2C2C2C</color>//描边颜色
     <color name="colorStrokeBar">#000000</color>//描边颜色
+
 </resources>

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/colorBg"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
@@ -10,13 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
+        android:background="@color/colorBg"
         app:cardCornerRadius="4dp"
         app:cardElevation="100dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:paddingTop="5dp">
+            android:layout_height="60dp"
+            android:background="@color/colorBg"
+            android:paddingTop="10dp">
 
             <TextView
                 android:id="@+id/item_title"
@@ -25,10 +28,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="19dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="20dp"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
+                android:background="@color/colorBg"
                 android:text="我是标题"
                 android:textSize="15dp"
                 android:textColor="@color/colorText"
@@ -41,7 +45,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="21dp"
-                android:layout_marginBottom="9dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/colorBg"
                 android:text="演唱者"
                 android:textSize="10dp"
                 android:textColor="@color/colorText"
@@ -51,10 +56,10 @@
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_below="@+id/f_view"
-        android:layout_marginTop="0dp"
-        android:background="@color/colorStrokeItem" />
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1px"-->
+<!--        android:layout_below="@+id/f_view"-->
+<!--        android:layout_marginTop="0dp"-->
+<!--        android:background="@color/colorStrokeItem" />-->
 </RelativeLayout>

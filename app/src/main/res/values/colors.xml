@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FEB408</color>//主色
-    <color name="colorPrimaryDark">#FEB408</color>//状态栏
+    <color name="colorPrimaryDark">#FFFFFF</color>//状态栏
     <color name="colorAccent">#000000</color>//强调色
     <color name="colorText">#000000</color>//字体颜色
     <color name="colorNavText">#CC000000</color>//导航栏字体颜色
@@ -10,4 +10,5 @@
     <color name="colorIconBg">#FFFFFF</color>
     <color name="colorStrokeItem">#ECECEC</color>//描边颜色
     <color name="colorStrokeBar">#E8E8E8</color>//描边颜色
+    <color name="colorNull">#00000000</color>
 </resources>
